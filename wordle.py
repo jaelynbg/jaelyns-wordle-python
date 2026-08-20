@@ -3,7 +3,8 @@ import random
 from string import ascii_letters
 
 def main():
-    word = get_random_word()
+    words_path = pathlib.Path(__file__).parent / "wordlist.txt"
+    word = get_random_word(words_path.read_text(encoding="utf-8").split("\n"))
     print("Welcome to Wordle! This is a simple word guessing game. \nYou have 6 attempts to guess the correct 5-letter word. \nGood luck!")
 
     for guess_num in range(1, 7):
@@ -16,16 +17,24 @@ def main():
         game_over(word)
 
 
-def get_random_word():
-    wordlist = pathlib.Path(__file__).parent / "wordlist.txt"
+def get_random_word(word_list):
     words = [
         word.upper()
-        for word in wordlist.read_text(encoding="utf-8").strip().split("\n")
+        for word in word_list
         if len(word) == 5 and all(letter in ascii_letters for letter in word)
     ]
     return random.choice(words)
 
 def show_guess(guess, word):
+    """Show the user's guess on the terminal and classify all letters.
+
+    ## Example:
+
+    >>> show_guess("CRANE", "SNAKE")
+    Correct letters: A, E
+    Misplaced letters: N
+    Wrong letters: C, R
+    """
     correct_letters = set()
     for letter, correct in zip(guess, word):
         if letter == correct:
