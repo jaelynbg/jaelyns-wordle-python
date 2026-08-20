@@ -1,21 +1,72 @@
-import tkinter
+import tkinter as tk
 import pathlib
 import random
 from string import ascii_letters
 
-def main():
-    words_path = pathlib.Path(__file__).parent / "wordlist.txt"
-    word = get_random_word(words_path.read_text(encoding="utf-8").split("\n"))
-    print("Welcome to Wordle! This is a simple word guessing game. \nYou have 6 attempts to guess the correct 5-letter word. \nGood luck!")
 
-    for guess_num in range(1, 7):
-        guess = input(f"\nGuess {guess_num}: ").upper()
-        show_guess(guess, word)
-        if guess == word:
-            print("Correct!")
-            break
-    else:
-        game_over(word)
+def main():
+    root = tk.Tk()
+    root.title("Jaelyn's Wordle")
+    root.geometry("800x600")
+
+    words_path = pathlib.Path(__file__).parent / "wordlist.txt"
+    word = get_random_word(
+        words_path.read_text(encoding="utf-8").split("\n")
+    )
+
+    title = tk.Label(
+        root,
+        text="JAELYN'S WORDLE",
+        font=("Arial", 28, "bold")
+    )
+    title.pack(pady=30)
+
+    instructions = tk.Label(
+        root,
+        text="Guess the 5-letter word in 6 attempts!",
+        font=("Arial", 14)
+    )
+    instructions.pack(pady=10)
+
+    board = tk.Frame(root)
+    board.pack(pady=20)
+
+    boxes = []
+
+    for row in range(6):
+        row_boxes = []
+
+        for column in range(5):
+            box = tk.Label(
+                board,
+                text="",
+                font=("Arial", 24, "bold"),
+                width=4,
+                height=2,
+                borderwidth=2,
+                relief="solid"
+            )
+            box.grid(row=row, column=column, padx=5, pady=5)
+            row_boxes.append(box)
+
+        boxes.append(row_boxes)
+
+    guess_entry = tk.Entry(
+        root,
+        font=("Arial", 20),
+        justify="center"
+    )
+    guess_entry.pack(pady=15)
+
+    guess_button = tk.Button(
+        root,
+        text="GUESS",
+        font=("Arial", 14, "bold"),
+        width=10
+    )
+    guess_button.pack()
+
+    root.mainloop()
 
 
 def get_random_word(word_list):
@@ -26,17 +77,10 @@ def get_random_word(word_list):
     ]
     return random.choice(words)
 
+
 def show_guess(guess, word):
-    """Show the user's guess on the terminal and classify all letters.
-
-    ## Example:
-
-    >>> show_guess("CRANE", "SNAKE")
-    Correct letters: A, E
-    Misplaced letters: N
-    Wrong letters: C, R
-    """
     correct_letters = set()
+
     for letter, correct in zip(guess, word):
         if letter == correct:
             correct_letters.add(letter)
@@ -48,8 +92,10 @@ def show_guess(guess, word):
     print("Misplaced letters:", ", ".join(sorted(misplaced_letters)))
     print("Wrong letters:", ", ".join(sorted(wrong_letters)))
 
+
 def game_over(word):
     print(f"\nSorry, you've used all your guesses. The correct word was: {word}")
+
 
 if __name__ == "__main__":
     main()
