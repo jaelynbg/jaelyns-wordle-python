@@ -7,9 +7,12 @@ from string import ascii_letters
 NUM_LETTERS = 5
 NUM_GUESSES = 6
 
-def create_keyboard(root, guess_entry, submit_guess):
+
+def create_keyboard(root, guess_entry):
     keyboard_frame = tk.Frame(root)
     keyboard_frame.pack(pady=20)
+
+    keyboard_buttons = {}
 
     rows = [
         "QWERTYUIOP",
@@ -17,7 +20,7 @@ def create_keyboard(root, guess_entry, submit_guess):
         "ZXCVBNM"
     ]
 
-    for row_index, row in enumerate(rows):
+    for row in rows:
         row_frame = tk.Frame(keyboard_frame)
         row_frame.pack()
 
@@ -32,40 +35,20 @@ def create_keyboard(root, guess_entry, submit_guess):
                     guess_entry, letter
                 )
             )
+
             button.pack(side="left", padx=2, pady=2)
 
-    backspace_button = tk.Button(
-        keyboard_frame,
-        text="⌫",
-        font=("Arial", 12, "bold"),
-        width=6,
-        height=2,
-        command=lambda: remove_letter(guess_entry)
-    )
-    backspace_button.pack(pady=5)
+            keyboard_buttons[letter] = button
 
-    enter_button = tk.Button(
-        keyboard_frame,
-        text="ENTER",
-        font=("Arial", 12, "bold"),
-        width=10,
-        height=2,
-        command=submit_guess
-    )
-    enter_button.pack(pady=5)
+    return keyboard_buttons
+
 
 def add_letter(guess_entry, letter):
     current_guess = guess_entry.get()
 
-    if len(current_guess) < 5:
+    if len(current_guess) < NUM_LETTERS:
         guess_entry.insert(tk.END, letter)
 
-
-def remove_letter(guess_entry):
-    current_guess = guess_entry.get()
-
-    if current_guess:
-        guess_entry.delete(len(current_guess) - 1, tk.END)
 
 def main():
     root = create_window()
@@ -77,23 +60,32 @@ def main():
     status_label = create_status_label(root)
     board = create_board(root)
 
-    game = create_game_data(word, board, status_label)
-
     guess_entry = create_guess_entry(root)
 
-    create_keyboard(
+    keyboard_buttons = create_keyboard(
         root,
-        guess_entry,
-        lambda: submit_guess(guess_entry, game)
+        guess_entry
+    )
+
+    game = create_game_data(
+        word,
+        board,
+        status_label,
+        keyboard_buttons
+    )
+
+    guess_entry.bind(
+        "<Return>",
+        lambda event: submit_guess(guess_entry, game)
     )
 
     root.mainloop()
 
-    
+
 def create_window():
     root = tk.Tk()
     root.title("Jaelyn's Wordle")
-    root.geometry("1000x1000")
+    root.geometry("1000x1200")
 
     return root
 
@@ -129,6 +121,7 @@ def create_instructions(root):
 
     return instructions
 
+
 def create_status_label(root):
     status_label = tk.Label(
         root,
@@ -139,9 +132,10 @@ def create_status_label(root):
 
     return status_label
 
+
 def create_board(root):
     board = tk.Frame(root)
-    board.pack(pady=20)
+    board.pack(pady=10)
 
     boxes = []
 
@@ -152,8 +146,8 @@ def create_board(root):
             box = tk.Label(
                 board,
                 text="",
-                font=("Arial", 24, "bold"),
-                width=4,
+                font=("Arial", 18, "bold"),
+                width=5,
                 height=2,
                 borderwidth=2,
                 relief="solid"
@@ -162,8 +156,8 @@ def create_board(root):
             box.grid(
                 row=row,
                 column=column,
-                padx=5,
-                pady=5
+                padx=3,
+                pady=3
             )
 
             row_boxes.append(box)
@@ -173,19 +167,23 @@ def create_board(root):
     return boxes
 
 
-def create_game_data(word, board, status_label):
+def create_game_data(word, board, status_label, keyboard_buttons):
     return {
         "word": word,
         "board": board,
         "status_label": status_label,
+        "keyboard_buttons": keyboard_buttons,
+        "keyboard_colors": {},
         "current_row": 0
     }
+
 
 def show_message(status_label, message, color):
     status_label.config(
         text=message,
         fg=color
     )
+
 
 def create_guess_entry(root):
     guess_entry = tk.Entry(
@@ -199,21 +197,21 @@ def create_guess_entry(root):
     return guess_entry
 
 
-def create_guess_button(root, guess_entry, game):
-    guess_button = tk.Button(
-        root,
-        text="GUESS",
-        font=("Arial", 14, "bold"),
-        width=10,
-        command=lambda: submit_guess(
-            guess_entry,
-            game
-        )
-    )
+def is_valid_word(guess):
+    words_path = pathlib.Path(__file__).parent / "wordlist.txt"
 
-    guess_button.pack()
+    word_list = words_path.read_text(
+        encoding="utf-8"
+    ).split("\n")
 
-    return guess_button
+    valid_words = {
+        word.upper().strip()
+        for word in word_list
+        if len(word.strip()) == NUM_LETTERS
+    }
+
+    return guess in valid_words
+
 
 
 def submit_guess(guess_entry, game):
@@ -227,6 +225,17 @@ def submit_guess(guess_entry, game):
         )
         return
 
+    if not is_valid_word(guess):
+        show_message(
+            game["status_label"],
+            "❌ Not a valid word!",
+            "red"
+        )
+        return
+
+    if game["current_row"] >= NUM_GUESSES:
+        return
+
     word = game["word"]
     board = game["board"]
     current_row = game["current_row"]
@@ -238,12 +247,20 @@ def submit_guess(guess_entry, game):
         word
     )
 
+    update_keyboard(
+        game["keyboard_buttons"],
+        game["keyboard_colors"],
+        guess,
+        word
+    )
+
     if guess == word:
         show_message(
             game["status_label"],
             "🎉 Correct! You got it!",
             "green"
         )
+        guess_entry.delete(0, tk.END)
         return
 
     game["current_row"] += 1
@@ -272,28 +289,85 @@ def submit_guess(guess_entry, game):
         )
 
     guess_entry.delete(0, tk.END)
-def update_board(board, row, guess, word):
+
+def get_letter_colors(guess, word):
+    colors = ["gray"] * NUM_LETTERS
+
+    # Make a copy of the answer.
+    # We use this to keep track of which letters
+    # are still available to match.
+    remaining_letters = list(word)
+
+    # STEP 1:
+    # Find letters that are in the correct position.
     for column, letter in enumerate(guess):
 
         if letter == word[column]:
-            set_letter_color(
-                board[row][column],
-                letter,
-                "green"
-            )
+            colors[column] = "green"
 
-        elif letter in word:
-            set_letter_color(
-                board[row][column],
-                letter,
-                "gold"
-            )
+            # This copy of the letter has now been used.
+            remaining_letters[column] = None
 
-        else:
-            set_letter_color(
-                board[row][column],
-                letter,
-                "gray"
+    # STEP 2:
+    # Find letters that exist in the word
+    # but are in the wrong position.
+    for column, letter in enumerate(guess):
+
+        if colors[column] == "green":
+            continue
+
+        if letter in remaining_letters:
+            colors[column] = "gold"
+
+            # Use up this copy of the letter.
+            letter_index = remaining_letters.index(letter)
+            remaining_letters[letter_index] = None
+
+    return colors
+
+
+def update_board(board, row, guess, word):
+    colors = get_letter_colors(
+        guess,
+        word
+    )
+
+    for column, letter in enumerate(guess):
+        set_letter_color(
+            board[row][column],
+            letter,
+            colors[column]
+        )
+
+
+def update_keyboard(keyboard_buttons, keyboard_colors, guess, word):
+    colors = get_letter_colors(
+        guess,
+        word
+    )
+
+    # Green is the highest priority.
+    color_priority = {
+        "gray": 1,
+        "gold": 2,
+        "green": 3
+    }
+
+    for letter, color in zip(guess, colors):
+
+        previous_color = keyboard_colors.get(letter)
+
+        # Only update the keyboard if this result
+        # is better than the previous result.
+        if (
+            previous_color is None
+            or color_priority[color] > color_priority[previous_color]
+        ):
+            keyboard_colors[letter] = color
+
+            keyboard_buttons[letter].config(
+                bg=color,
+                fg="white"
             )
 
 
