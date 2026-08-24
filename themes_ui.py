@@ -43,8 +43,6 @@ def apply_theme(game):
 
     status_label = game["status_label"]
 
-    guess_entry = game["guess_entry"]
-
     board = game["board"]
 
     board_frame = game["board_frame"]
@@ -99,12 +97,6 @@ def apply_theme(game):
     # -------------------------
     # Guess entry
     # -------------------------
-
-    guess_entry.config(
-        bg=theme["app"]["background"],
-        fg=theme["app"]["text"],
-        insertbackground=theme["app"]["text"]
-    )
 
     # -------------------------
     # Board

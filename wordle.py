@@ -91,16 +91,12 @@ def disable_guess_entry(guess_entry):
     )
 
 
-def end_game(game, guess_entry):
+def end_game(game):
 
     game["game_over"] = True
 
-    disable_guess_entry(
-        guess_entry
-    )
 
-
-def new_game(root, game, guess_entry):
+def new_game(root, game):
 
     game["word"] = load_game_word()
     game["current_row"] = 0
@@ -119,9 +115,7 @@ def new_game(root, game, guess_entry):
 
     reset_keyboard(game)
 
-    reset_guess_entry(
-        guess_entry
-    )
+    game["current_guess"] = ""
 
     show_message(
         game["status_label"],
@@ -322,6 +316,8 @@ def create_game_data(
 
         "current_row": 0,
 
+        "current_guess": "",
+
         "game_over": False,
 
         "theme": "Light",
@@ -331,8 +327,6 @@ def create_game_data(
         "title": None,
 
         "instructions": None,
-
-        "guess_entry": None,
 
         "new_game_button": None,
 
@@ -417,15 +411,97 @@ def is_valid_word(guess):
     return guess in valid_words
 
 
+def handle_keypress(event, game):
+
+    if game["game_over"]:
+        return
+
+    key = event.keysym.upper()
+
+    # Backspace
+    if key == "BACKSPACE":
+
+        if len(game["current_guess"]) > 0:
+
+            game["current_guess"] = game["current_guess"][:-1]
+
+            update_current_row(
+                game
+            )
+
+        return
+
+    # Enter
+    if key == "RETURN":
+
+        submit_guess(
+            game
+        )
+
+        return
+
+    # Letters A-Z
+    if len(event.char) == 1 and event.char.isalpha():
+
+        if len(game["current_guess"]) < NUM_LETTERS:
+
+            game["current_guess"] += event.char.upper()
+
+            update_current_row(
+                game
+            )
+
+
+def update_current_row(game):
+
+    row = game["current_row"]
+
+    guess = game["current_guess"]
+
+    board = game["board"]
+
+    from themes import THEMES
+
+    theme = THEMES[
+        game["theme"]
+    ]
+
+    for column in range(NUM_LETTERS):
+
+        box = board[row][column]
+
+        if column < len(guess):
+
+            box.config(
+                text=guess[column],
+                bg=theme["board"]["empty"],
+                fg=theme["app"]["text"],
+                borderwidth=0,
+                relief="flat",
+                highlightthickness=1
+            )
+
+        else:
+
+            box.config(
+                text="",
+                bg=theme["board"]["empty"],
+                fg=theme["app"]["text"],
+                borderwidth=0,
+                relief="flat",
+                highlightthickness=1
+            )
+
+
 def submit_guess(
-    guess_entry,
+    
     game
 ):
 
     if game["game_over"]:
         return
 
-    guess = guess_entry.get().upper()
+    guess = game["current_guess"].upper()
 
     if len(guess) != NUM_LETTERS:
 
@@ -477,7 +553,6 @@ def submit_guess(
 
         end_game(
             game,
-            guess_entry
         )
 
         return
@@ -496,7 +571,6 @@ def submit_guess(
 
         end_game(
             game,
-            guess_entry
         )
 
     elif guesses_left == 1:
@@ -515,10 +589,7 @@ def submit_guess(
             "red"
         )
 
-    guess_entry.delete(
-        0,
-        tk.END
-    )
+    game["current_guess"] = ""
 
 
 def get_letter_colors(
@@ -718,7 +789,6 @@ def main():
     game["root"] = root
     game["title"] = title
     game["instructions"] = instructions
-    game["guess_entry"] = guess_entry
 
     create_theme_selector(
         root,
@@ -737,7 +807,6 @@ def main():
         command=lambda: new_game(
             root,
             game,
-            guess_entry
         )
     )
 
@@ -747,13 +816,15 @@ def main():
 
     game["new_game_button"] = new_game_button
 
-    guess_entry.bind(
-        "<Return>",
-        lambda event: submit_guess(
-            guess_entry,
+    root.bind(
+        "<Key>",
+        lambda event: handle_keypress(
+            event,
             game
         )
     )
+
+    root.focus_force()
 
     root.mainloop()
 
