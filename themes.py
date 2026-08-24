@@ -1,122 +1,97 @@
 THEMES = {
+
     "Light": {
         "icon": "☀️",
 
-        # Main colors
-        "background": "#FFFFFF",
-        "text": "#1A1A1B",
+        "app": {
+            "background": "#FFFFFF",
+            "text": "#1A1A1B"
+        },
 
-        # Board
-        "border": "#D3D6DA",
-        "empty": "#FFFFFF",
+        "board": {
+            "empty": "#FFFFFF",
+            "border": "#D3D6DA",
+            "correct": "#6AAA64",
+            "misplaced": "#C9B458",
+            "wrong": "#787C7E"
+        },
 
-        # Keyboard
-        "keyboard": "#D3D6DA",
-        "keyboard_text": "#1A1A1B",
+        "keyboard": {
+            "default": "#D3D6DA",
+            "correct": "#6AAA64",
+            "misplaced": "#C9B458",
+            "wrong": "#787C7E"
+        },
 
-        # Game results
-        "correct": "#6AAA64",
-        "misplaced": "#C9B458",
-        "wrong": "#787C7E",
-
-        # UI surfaces
-        "surface": "#F6F7F8",
-        "surface_alt": "#EDEFF1",
-
-        # Secondary text
-        "secondary_text": "#787C7E"
+        "selector": {
+            "background": "#FFFFFF",
+            "text": "#1A1A1B",
+            "hover": "#F0F0F0",
+            "selected": "#D3D6DA",
+            "border": "#D3D6DA"
+        }
     },
 
 
     "Dark": {
         "icon": "🌙",
 
-        # Main colors
-        "background": "#121213",
-        "text": "#D7DADC",
+        "app": {
+            "background": "#121213",
+            "text": "#D7DADC"
+        },
 
-        # Board
-        "border": "#3A3A3C",
-        "empty": "#121213",
+        "board": {
+            "empty": "#121213",
+            "border": "#3A3A3C",
+            "correct": "#538D4E",
+            "misplaced": "#B59F3B",
+            "wrong": "#3A3A3C"
+        },
 
-        # Keyboard
-        "keyboard": "#3A3A3C",
-        "keyboard_text": "#D7DADC",
+        "keyboard": {
+            "default": "#818384",
+            "correct": "#538D4E",
+            "misplaced": "#B59F3B",
+            "wrong": "#3A3A3C"
+        },
 
-        # Game results
-        "correct": "#538D4E",
-        "misplaced": "#B59F3B",
-        "wrong": "#818384",
-
-        # UI surfaces
-        "surface": "#1A1A1B",
-        "surface_alt": "#272729",
-
-        # Secondary text
-        "secondary_text": "#818384"
+        "selector": {
+            "background": "#121213",
+            "text": "#D7DADC",
+            "hover": "#3A3A3C",
+            "selected": "#565758",
+            "border": "#3A3A3C"
+        }
     },
+
+
+    # -------------------------
+    # FUTURE THEMES
+    # -------------------------
 
     "Blue": {
         "icon": "💙",
 
-        "app": {
-            "background": "#EAF4FF",
-            "text": "#12304A"
-        },
-
-        "board": {
-            "empty": "#EAF4FF",
-            "border": "#9CC7E8",
-            "correct": "#2E86AB",
-            "misplaced": "#F2C14E",
-            "wrong": "#6C757D"
-        },
-
-        "keyboard": {
-            "default": "#A9D6F5",
-            "correct": "#2E86AB",
-            "misplaced": "#F2C14E",
-            "wrong": "#6C757D"
-        },
-
-        "selector": {
-            "background": "#EAF4FF",
-            "text": "#12304A",
-            "hover": "#D7ECFF",
-            "selected": "#C4E2FA",
-            "border": "#9CC7E8"
-        }
+        "background": "#EAF4FF",
+        "text": "#12304A",
+        "border": "#9CC7E8",
+        "keyboard": "#A9D6F5",
+        "correct": "#2E86AB",
+        "misplaced": "#F2C14E",
+        "wrong": "#6C757D"
     },
+
 
     "Pink": {
         "icon": "🌸",
 
-        "app": {
-            "background": "#FFF0F6",
-            "text": "#5A1833"
-        },
-
-        "board": {
-            "empty": "#FFF0F6",
-            "border": "#F2B5D4",
-            "correct": "#D63384",
-            "misplaced": "#E0A458",
-            "wrong": "#8A6878"
-        },
-
-        "keyboard": {
-            "default": "#F4C2D7",
-            "correct": "#D63384",
-            "misplaced": "#E0A458",
-            "wrong": "#8A6878"
-        },
-
-        "selector": {
-            "background": "#FFF0F6",
-            "text": "#5A1833",
-            "hover": "#FFE0EC",
-            "selected": "#F8C8DC",
-            "border": "#F2B5D4"
-        }
+        "background": "#FFF0F6",
+        "text": "#5A1833",
+        "border": "#F2B5D4",
+        "keyboard": "#F4C2D7",
+        "correct": "#D63384",
+        "misplaced": "#E0A458",
+        "wrong": "#8A6878"
     }
 }

@@ -79,10 +79,10 @@ def reset_board(board):
         for box in row:
             box.config(
                 text="",
-                bg="SystemButtonFace",
-                fg="black"
+                bg="#FFFFFF",
+                fg="#1A1A1B"
             )
-
+            
 def reset_keyboard(keyboard_buttons):
     for button in keyboard_buttons.values():
         button.config(
@@ -162,8 +162,12 @@ def create_board(root):
                 font=("Arial", 18, "bold"),
                 width=5,
                 height=2,
+                bg="#FFFFFF",
+                fg="#1A1A1B",
                 borderwidth=2,
-                relief="solid"
+                relief="solid",
+                highlightbackground="#D3D6DA",
+                highlightcolor="#D3D6DA"
             )
 
             box.grid(
@@ -178,7 +182,6 @@ def create_board(root):
         boxes.append(row_boxes)
 
     return boxes
-
 
 def create_game_data(word, board, status_label, keyboard_buttons):
     return {
