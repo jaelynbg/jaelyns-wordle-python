@@ -9,8 +9,20 @@ from themes_ui import apply_theme, create_theme_selector
 NUM_LETTERS = 5
 NUM_GUESSES = 6
 
+def add_letter(game, letter):
 
-def create_keyboard(root, guess_entry):
+    if game["game_over"]:
+        return
+
+    if len(game["current_guess"]) < NUM_LETTERS:
+
+        game["current_guess"] += letter
+
+        update_current_row(
+            game
+        )
+
+def create_keyboard(root, game):
 
     keyboard_frame = tk.Frame(
         root
@@ -29,7 +41,7 @@ def create_keyboard(root, guess_entry):
         "ZXCVBNM"
     ]
 
-    for row in rows:
+    for row_index, row in enumerate(rows):
 
         row_frame = tk.Frame(
             keyboard_frame
@@ -40,6 +52,38 @@ def create_keyboard(root, guess_entry):
         keyboard_row_frames.append(
             row_frame
         )
+
+        # -------------------------
+        # Enter button
+        # -------------------------
+
+        if row_index == 2:
+
+            enter_button = tk.Button(
+                row_frame,
+                text="ENTER",
+                font=("Arial", 12, "bold"),
+                width=7,
+                height=2,
+                relief="flat",
+                bd=0,
+                highlightthickness=0,
+                command=lambda: submit_guess(
+                    game
+                )
+            )
+
+            enter_button.pack(
+                side="left",
+                padx=2,
+                pady=2
+            )
+
+            keyboard_buttons["ENTER"] = enter_button
+
+        # -------------------------
+        # Letter buttons
+        # -------------------------
 
         for letter in row:
 
@@ -53,7 +97,7 @@ def create_keyboard(root, guess_entry):
                 bd=0,
                 highlightthickness=0,
                 command=lambda letter=letter: add_letter(
-                    guess_entry,
+                    game,
                     letter
                 )
             )
@@ -66,30 +110,47 @@ def create_keyboard(root, guess_entry):
 
             keyboard_buttons[letter] = button
 
+        # -------------------------
+        # Backspace button
+        # -------------------------
+
+        if row_index == 2:
+
+            backspace_button = tk.Button(
+                row_frame,
+                text="⌫",
+                font=("Arial", 12, "bold"),
+                width=7,
+                height=2,
+                relief="flat",
+                bd=0,
+                highlightthickness=0,
+                command=lambda: handle_keypress(
+                    type(
+                        "Event",
+                        (),
+                        {
+                            "keysym": "BackSpace",
+                            "char": ""
+                        }
+                    )(),
+                    game
+                )
+            )
+
+            backspace_button.pack(
+                side="left",
+                padx=2,
+                pady=2
+            )
+
+            keyboard_buttons["BACKSPACE"] = backspace_button
+
     return (
         keyboard_buttons,
         keyboard_frame,
         keyboard_row_frames
     )
-
-
-def add_letter(guess_entry, letter):
-
-    current_guess = guess_entry.get()
-
-    if len(current_guess) < NUM_LETTERS:
-        guess_entry.insert(
-            tk.END,
-            letter
-        )
-
-
-def disable_guess_entry(guess_entry):
-
-    guess_entry.config(
-        state="disabled"
-    )
-
 
 def end_game(game):
 
@@ -151,19 +212,6 @@ def reset_keyboard(game):
 
     apply_theme(game)
 
-
-def reset_guess_entry(guess_entry):
-
-    guess_entry.config(
-        state="normal"
-    )
-
-    guess_entry.delete(
-        0,
-        tk.END
-    )
-
-    guess_entry.focus()
 
 
 def create_window():
@@ -378,20 +426,6 @@ def show_message(
             fg=color
         )
 
-
-def create_guess_entry(root):
-
-    guess_entry = tk.Entry(
-        root,
-        font=("Arial", 20),
-        justify="center"
-    )
-
-    guess_entry.pack(
-        pady=15
-    )
-
-    return guess_entry
 
 
 def is_valid_word(guess):
@@ -763,9 +797,19 @@ def main():
         root
     )
 
-    guess_entry = create_guess_entry(
-        root
+    game = create_game_data(
+        word,
+        board,
+        board_frame,
+        status_label,
+        {},
+        None,
+        []
     )
+
+    game["root"] = root
+    game["title"] = title
+    game["instructions"] = instructions
 
     (
         keyboard_buttons,
@@ -773,22 +817,12 @@ def main():
         keyboard_row_frames
     ) = create_keyboard(
         root,
-        guess_entry
+        game
     )
 
-    game = create_game_data(
-        word,
-        board,
-        board_frame,
-        status_label,
-        keyboard_buttons,
-        keyboard_frame,
-        keyboard_row_frames
-    )
-
-    game["root"] = root
-    game["title"] = title
-    game["instructions"] = instructions
+    game["keyboard_buttons"] = keyboard_buttons
+    game["keyboard_frame"] = keyboard_frame
+    game["keyboard_row_frames"] = keyboard_row_frames
 
     create_theme_selector(
         root,
@@ -827,7 +861,6 @@ def main():
     root.focus_force()
 
     root.mainloop()
-
 
 if __name__ == "__main__":
     main()
