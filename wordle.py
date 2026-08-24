@@ -2,8 +2,8 @@ import tkinter as tk
 import pathlib
 import random
 from string import ascii_letters
-from themes import THEMES
-from themes_ui import get_current_theme, apply_theme, create_theme_selector
+
+from themes_ui import apply_theme, create_theme_selector
 
 
 NUM_LETTERS = 5
@@ -421,8 +421,7 @@ def get_random_word(word_list):
 def main():
     root = create_window()
 
-    # word = load_game_word()
-    word = "TWIST"
+    word = load_game_word()
 
     title = create_title(root)
     instructions = create_instructions(root)

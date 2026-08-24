@@ -15,7 +15,6 @@ def change_theme(game, theme_name):
 
     apply_theme(game)
 
-    # Update the theme selector
     update_theme_selector(game)
 
 
@@ -30,78 +29,100 @@ def apply_theme(game):
     keyboard_buttons = game["keyboard_buttons"]
     board = game["board"]
 
-    # Main window
+    # -------------------------
+    # Main application
+    # -------------------------
+
     root.config(
-        bg=theme["background"]
+        bg=theme["app"]["background"]
     )
 
-    # Text
     title.config(
-        bg=theme["background"],
-        fg=theme["text"]
+        bg=theme["app"]["background"],
+        fg=theme["app"]["text"]
     )
 
     instructions.config(
-        bg=theme["background"],
-        fg=theme["text"]
+        bg=theme["app"]["background"],
+        fg=theme["app"]["text"]
     )
 
     status_label.config(
-        bg=theme["background"]
+        bg=theme["app"]["background"],
+        fg=theme["app"]["text"]
     )
 
+    # -------------------------
     # Guess entry
+    # -------------------------
+
     guess_entry.config(
-        bg=theme["background"],
-        fg=theme["text"],
-        insertbackground=theme["text"]
+        bg=theme["app"]["background"],
+        fg=theme["app"]["text"],
+        insertbackground=theme["app"]["text"]
     )
 
+    # -------------------------
     # Board
+    # -------------------------
+
     for row in board:
         for box in row:
 
-            # Don't destroy an already-colored guess tile
             current_color = box.cget("bg")
 
-            if current_color in ("green", "gold", "gray"):
+            # Don't change already colored tiles
+            if current_color in (
+                theme["board"]["correct"],
+                theme["board"]["misplaced"],
+                theme["board"]["wrong"]
+            ):
                 continue
 
             box.config(
-                bg=theme["background"],
-                fg=theme["text"],
-                highlightbackground=theme["border"]
+                bg=theme["board"]["empty"],
+                fg=theme["app"]["text"],
+                highlightbackground=theme["board"]["border"]
             )
 
+    # -------------------------
     # Keyboard
+    # -------------------------
+
     for letter, button in keyboard_buttons.items():
 
         color = game["keyboard_colors"].get(
             letter,
-            theme["keyboard"]
+            "default"
         )
 
-        # Convert game colors into the current theme colors
         if color == "green":
-            color = theme["correct"]
+            color = theme["keyboard"]["correct"]
 
         elif color == "gold":
-            color = theme["misplaced"]
+            color = theme["keyboard"]["misplaced"]
 
         elif color == "gray":
-            color = theme["wrong"]
+            color = theme["keyboard"]["wrong"]
+
+        else:
+            color = theme["keyboard"]["default"]
 
         button.config(
             bg=color,
-            fg=theme["text"]
+            fg=theme["app"]["text"]
         )
 
+    # -------------------------
     # Theme selector
+    # -------------------------
+
     if "theme_frame" in game:
         update_theme_selector(game)
 
 
 def update_theme_selector(game):
+
     if "theme_frame" not in game:
         return
 
@@ -111,57 +132,83 @@ def update_theme_selector(game):
     theme_button = game["theme_button"]
     theme_panel = game["theme_panel"]
 
-    # Update selector colors
+    # -------------------------
+    # Selector container
+    # -------------------------
+
     theme_frame.config(
-        bg=theme["background"]
+        bg=theme["selector"]["background"]
     )
+
+    # -------------------------
+    # Main selector button
+    # -------------------------
 
     theme_button.config(
-        bg=theme["keyboard"],
-        fg=theme["text"],
-        activebackground=theme["border"],
-        activeforeground=theme["text"],
-        text=f"{theme['icon']}  Change Theme    {'▲' if game['theme_panel_open'] else '▼'}"
+        bg=theme["selector"]["background"],
+        fg=theme["selector"]["text"],
+        activebackground=theme["selector"]["hover"],
+        activeforeground=theme["selector"]["text"],
+        text=(
+            f"{theme['icon']}  Change Theme    "
+            f"{'▲' if game['theme_panel_open'] else '▼'}"
+        )
     )
+
+    # -------------------------
+    # Dropdown panel
+    # -------------------------
 
     theme_panel.config(
-        bg=theme["background"]
+        bg=theme["selector"]["background"],
+        highlightbackground=theme["selector"]["border"]
     )
 
-    # Update every theme button
+    # -------------------------
+    # Theme options
+    # -------------------------
+
     for theme_name, button in game["theme_buttons"].items():
 
         selected = theme_name == game["theme"]
 
         if selected:
+
             button.config(
-                bg=theme["border"],
-                fg=theme["text"],
-                activebackground=theme["border"],
-                activeforeground=theme["text"]
+                bg=theme["selector"]["selected"],
+                fg=theme["selector"]["text"],
+                activebackground=theme["selector"]["selected"],
+                activeforeground=theme["selector"]["text"]
             )
 
         else:
+
             button.config(
-                bg=theme["background"],
-                fg=theme["text"],
-                activebackground=theme["border"],
-                activeforeground=theme["text"]
+                bg=theme["selector"]["background"],
+                fg=theme["selector"]["text"],
+                activebackground=theme["selector"]["hover"],
+                activeforeground=theme["selector"]["text"]
             )
 
 
 def toggle_theme_panel(game):
+
     theme_panel = game["theme_panel"]
 
     if game["theme_panel_open"]:
+
         theme_panel.place_forget()
+
         game["theme_panel_open"] = False
 
     else:
+
         theme_panel.place(
-            x=0,
-            y=48
+            x=20,
+            y=65
         )
+
+        theme_panel.lift()
 
         game["theme_panel_open"] = True
 
@@ -169,12 +216,16 @@ def toggle_theme_panel(game):
 
 
 def create_theme_selector(root, game):
+
     theme = get_current_theme(game)
 
-    # Main selector container
+    # -------------------------
+    # Selector container
+    # -------------------------
+
     theme_frame = tk.Frame(
         root,
-        bg=theme["background"]
+        bg=theme["selector"]["background"]
     )
 
     theme_frame.place(
@@ -182,18 +233,22 @@ def create_theme_selector(root, game):
         y=20
     )
 
-    # Main "Change Theme" button
+    # -------------------------
+    # Main button
+    # -------------------------
+
     theme_button = tk.Button(
         theme_frame,
         text=f"{theme['icon']}  Change Theme    ▼",
         font=("Arial", 11, "bold"),
-        bg=theme["keyboard"],
-        fg=theme["text"],
-        activebackground=theme["border"],
-        activeforeground=theme["text"],
+        bg=theme["selector"]["background"],
+        fg=theme["selector"]["text"],
+        activebackground=theme["selector"]["hover"],
+        activeforeground=theme["selector"]["text"],
         relief="flat",
         bd=0,
-        highlightthickness=0,
+        highlightthickness=1,
+        highlightbackground=theme["selector"]["border"],
         padx=14,
         pady=10,
         cursor="hand2",
@@ -202,15 +257,22 @@ def create_theme_selector(root, game):
 
     theme_button.pack()
 
+    # -------------------------
     # Dropdown panel
+    # -------------------------
+
     theme_panel = tk.Frame(
-        theme_frame,
-        bg=theme["background"],
+        root,
+        bg=theme["selector"]["background"],
         bd=1,
         relief="solid"
     )
 
     theme_buttons = {}
+
+    # -------------------------
+    # Theme options
+    # -------------------------
 
     for theme_name, theme_data in THEMES.items():
 
@@ -219,10 +281,10 @@ def create_theme_selector(root, game):
             text=f"{theme_data['icon']}   {theme_name}",
             font=("Arial", 11, "bold"),
             anchor="w",
-            bg=theme["background"],
-            fg=theme["text"],
-            activebackground=theme["border"],
-            activeforeground=theme["text"],
+            bg=theme["selector"]["background"],
+            fg=theme["selector"]["text"],
+            activebackground=theme["selector"]["hover"],
+            activeforeground=theme["selector"]["text"],
             relief="flat",
             bd=0,
             highlightthickness=0,
@@ -244,7 +306,10 @@ def create_theme_selector(root, game):
 
         theme_buttons[theme_name] = button
 
-    # Save UI references in game
+    # -------------------------
+    # Save UI references
+    # -------------------------
+
     game["theme_frame"] = theme_frame
     game["theme_button"] = theme_button
     game["theme_panel"] = theme_panel
@@ -255,13 +320,14 @@ def create_theme_selector(root, game):
 
 
 def select_theme(game, theme_name):
+
     change_theme(
         game,
         theme_name
     )
 
-    # Close panel after selection
     game["theme_panel"].place_forget()
+
     game["theme_panel_open"] = False
 
     update_theme_selector(game)
