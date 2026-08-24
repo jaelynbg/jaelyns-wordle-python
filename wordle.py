@@ -332,7 +332,7 @@ def create_board(root):
             box.grid(
                 row=row,
                 column=column,
-                padx=3,
+                padx=2,
                 pady=3
             )
 
@@ -830,7 +830,9 @@ def set_letter_color(
         fg="#FFFFFF",
         borderwidth=0,
         relief="flat",
-        highlightthickness=0
+        highlightthickness=2,
+        highlightbackground=theme["board"]["border"],
+        highlightcolor=theme["board"]["border"]
     )
 
 
