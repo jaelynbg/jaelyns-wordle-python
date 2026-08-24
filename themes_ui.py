@@ -47,6 +47,8 @@ def apply_theme(game):
 
     board = game["board"]
 
+    board_frame = game["board_frame"]
+
     keyboard_buttons = game["keyboard_buttons"]
 
     keyboard_frame = game["keyboard_frame"]
@@ -108,6 +110,8 @@ def apply_theme(game):
     # Board
     # -------------------------
 
+    board_frame.config(bg=theme["app"]["background"])
+
     for row in range(len(board)):
 
         for column in range(len(board[row])):
@@ -121,6 +125,8 @@ def apply_theme(game):
                 box.config(
                     bg=theme["board"]["empty"],
                     fg=theme["app"]["text"],
+                    borderwidth=2,
+                    relief="solid",
                     highlightbackground=theme["board"]["border"],
                     highlightcolor=theme["board"]["border"]
                 )
@@ -164,7 +170,10 @@ def apply_theme(game):
                 bg=theme["keyboard"]["default"],
                 fg=theme["app"]["text"],
                 activebackground=theme["keyboard"]["default"],
-                activeforeground=theme["app"]["text"]
+                activeforeground=theme["app"]["text"],
+                relief="flat",
+                bd=0,
+                highlightthickness=0
             )
 
         else:
@@ -173,7 +182,10 @@ def apply_theme(game):
                 bg=theme["keyboard"][status],
                 fg="#FFFFFF",
                 activebackground=theme["keyboard"][status],
-                activeforeground="#FFFFFF"
+                activeforeground="#FFFFFF",
+                relief="flat",
+                bd=0,
+                highlightthickness=0
             )
 
     # -------------------------

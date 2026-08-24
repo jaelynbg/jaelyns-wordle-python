@@ -12,8 +12,13 @@ NUM_GUESSES = 6
 
 def create_keyboard(root, guess_entry):
 
-    keyboard_frame = tk.Frame(root)
-    keyboard_frame.pack(pady=20)
+    keyboard_frame = tk.Frame(
+        root
+    )
+
+    keyboard_frame.pack(
+        pady=20
+    )
 
     keyboard_buttons = {}
     keyboard_row_frames = []
@@ -26,10 +31,15 @@ def create_keyboard(root, guess_entry):
 
     for row in rows:
 
-        row_frame = tk.Frame(keyboard_frame)
+        row_frame = tk.Frame(
+            keyboard_frame
+        )
+
         row_frame.pack()
 
-        keyboard_row_frames.append(row_frame)
+        keyboard_row_frames.append(
+            row_frame
+        )
 
         for letter in row:
 
@@ -39,6 +49,9 @@ def create_keyboard(root, guess_entry):
                 font=("Arial", 12, "bold"),
                 width=4,
                 height=2,
+                relief="flat",
+                bd=0,
+                highlightthickness=0,
                 command=lambda letter=letter: add_letter(
                     guess_entry,
                     letter
@@ -53,7 +66,11 @@ def create_keyboard(root, guess_entry):
 
             keyboard_buttons[letter] = button
 
-    return keyboard_buttons, keyboard_frame, keyboard_row_frames
+    return (
+        keyboard_buttons,
+        keyboard_frame,
+        keyboard_row_frames
+    )
 
 
 def add_letter(guess_entry, letter):
@@ -251,7 +268,7 @@ def create_board(root):
                 width=5,
                 height=2,
                 borderwidth=2,
-                relief="solid"
+                relief="solid",
             )
 
             box.grid(
@@ -265,12 +282,13 @@ def create_board(root):
 
         boxes.append(row_boxes)
 
-    return boxes
+    return board,boxes
 
 
 def create_game_data(
     word,
     board,
+    board_frame,
     status_label,
     keyboard_buttons,
     keyboard_frame,
@@ -282,6 +300,8 @@ def create_game_data(
         "word": word,
 
         "board": board,
+
+        "board_frame": board_frame,
 
         "status_label": status_label,
 
@@ -621,9 +641,11 @@ def set_letter_color(
     box.config(
         text=letter,
         bg=theme["board"][color],
-        fg=theme["app"]["text"]
+        fg="#FFFFFF",
+        borderwidth=0,
+        relief="flat",
+        highlightthickness=0
     )
-
 
 def get_random_word(word_list):
 
@@ -664,7 +686,7 @@ def main():
         root
     )
 
-    board = create_board(
+    board_frame, board = create_board(
         root
     )
 
@@ -684,6 +706,7 @@ def main():
     game = create_game_data(
         word,
         board,
+        board_frame,
         status_label,
         keyboard_buttons,
         keyboard_frame,
