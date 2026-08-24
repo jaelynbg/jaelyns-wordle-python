@@ -267,7 +267,7 @@ def create_board(root):
                 font=("Arial", 18, "bold"),
                 width=5,
                 height=2,
-                borderwidth=2,
+                borderwidth=0,
                 relief="flat",
                 highlightthickness=1,
                 takefocus=0

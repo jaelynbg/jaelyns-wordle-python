@@ -125,8 +125,9 @@ def apply_theme(game):
                 box.config(
                     bg=theme["board"]["empty"],
                     fg=theme["app"]["text"],
-                    borderwidth=2,
-                    relief="solid",
+                    borderwidth=0,
+                    relief="flat",
+                    highlightthickness=2,
                     highlightbackground=theme["board"]["border"],
                     highlightcolor=theme["board"]["border"]
                 )
