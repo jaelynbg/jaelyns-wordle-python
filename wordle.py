@@ -512,7 +512,9 @@ def update_current_row(game):
                 fg=theme["app"]["text"],
                 borderwidth=0,
                 relief="flat",
-                highlightthickness=1
+                highlightthickness=2,
+                highlightbackground=theme["board"]["border"],
+                highlightcolor=theme["board"]["border"]
             )
 
         else:
@@ -523,9 +525,10 @@ def update_current_row(game):
                 fg=theme["app"]["text"],
                 borderwidth=0,
                 relief="flat",
-                highlightthickness=1
+                highlightthickness=2,
+                highlightbackground=theme["board"]["border"],
+                highlightcolor=theme["board"]["border"]
             )
-
 
 def submit_guess(
     
