@@ -5,7 +5,7 @@ THEMES = {
 
         "app": {
             "background": "#FFFFFF",
-            "text": "#1A1A1B"
+            "text": "#000000"
         },
 
         "board": {
@@ -66,32 +66,68 @@ THEMES = {
     },
 
 
-    # -------------------------
-    # FUTURE THEMES
-    # -------------------------
-
     "Blue": {
         "icon": "💙",
 
-        "background": "#EAF4FF",
-        "text": "#12304A",
-        "border": "#9CC7E8",
-        "keyboard": "#A9D6F5",
-        "correct": "#2E86AB",
-        "misplaced": "#F2C14E",
-        "wrong": "#6C757D"
+        "app": {
+            "background": "#EAF4FF",
+            "text": "#12304A"
+        },
+
+        "board": {
+            "empty": "#EAF4FF",
+            "border": "#9CC7E8",
+            "correct": "#2E86AB",
+            "misplaced": "#F2C14E",
+            "wrong": "#6C757D"
+        },
+
+        "keyboard": {
+            "default": "#A9D6F5",
+            "correct": "#2E86AB",
+            "misplaced": "#F2C14E",
+            "wrong": "#6C757D"
+        },
+
+        "selector": {
+            "background": "#EAF4FF",
+            "text": "#12304A",
+            "hover": "#D6EBFF",
+            "selected": "#A9D6F5",
+            "border": "#9CC7E8"
+        }
     },
 
 
     "Pink": {
         "icon": "🌸",
 
-        "background": "#FFF0F6",
-        "text": "#5A1833",
-        "border": "#F2B5D4",
-        "keyboard": "#F4C2D7",
-        "correct": "#D63384",
-        "misplaced": "#E0A458",
-        "wrong": "#8A6878"
+        "app": {
+            "background": "#FFF0F6",
+            "text": "#5A1833"
+        },
+
+        "board": {
+            "empty": "#FFF0F6",
+            "border": "#F2B5D4",
+            "correct": "#D63384",
+            "misplaced": "#E0A458",
+            "wrong": "#8A6878"
+        },
+
+        "keyboard": {
+            "default": "#F4C2D7",
+            "correct": "#D63384",
+            "misplaced": "#E0A458",
+            "wrong": "#8A6878"
+        },
+
+        "selector": {
+            "background": "#FFF0F6",
+            "text": "#5A1833",
+            "hover": "#FFE0EC",
+            "selected": "#F4C2D7",
+            "border": "#F2B5D4"
+        }
     }
 }
