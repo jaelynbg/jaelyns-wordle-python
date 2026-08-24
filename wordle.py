@@ -2,53 +2,12 @@ import tkinter as tk
 import pathlib
 import random
 from string import ascii_letters
+from themes import THEMES
+from themes_ui import get_current_theme, apply_theme, create_theme_selector
 
 
 NUM_LETTERS = 5
 NUM_GUESSES = 6
-
-THEMES = {
-    "Light": {
-        "background": "#FFFFFF",
-        "text": "#000000",
-        "border": "#D3D6DA",
-        "keyboard": "#D3D6DA",
-        "correct": "#6AAA64",
-        "misplaced": "#C9B458",
-        "wrong": "#787C7E"
-    },
-
-    "Dark": {
-        "background": "#121213",
-        "text": "#FFFFFF",
-        "border": "#3A3A3C",
-        "keyboard": "#818384",
-        "correct": "#538D4E",
-        "misplaced": "#B59F3B",
-        "wrong": "#3A3A3C"
-    },
-
-    "Blue": {
-        "background": "#EAF4FF",
-        "text": "#12304A",
-        "border": "#9CC7E8",
-        "keyboard": "#A9D6F5",
-        "correct": "#2E86AB",
-        "misplaced": "#F2C14E",
-        "wrong": "#6C757D"
-    },
-
-    "Pink": {
-        "background": "#FFF0F6",
-        "text": "#5A1833",
-        "border": "#F2B5D4",
-        "keyboard": "#F4C2D7",
-        "correct": "#D63384",
-        "misplaced": "#E0A458",
-        "wrong": "#8A6878"
-    }
-}
-
 
 def create_keyboard(root, guess_entry):
     keyboard_frame = tk.Frame(root)
@@ -135,48 +94,6 @@ def reset_guess_entry(guess_entry):
     guess_entry.config(state="normal")
     guess_entry.delete(0, tk.END)
     guess_entry.focus()
-
-def main():
-    root = create_window()
-
-    # word = load_game_word()
-    word = "TWIST"
-
-    title = create_title(root)
-    instructions = create_instructions(root)
-    status_label = create_status_label(root)
-    board = create_board(root)
-
-    guess_entry = create_guess_entry(root)
-
-    keyboard_buttons = create_keyboard(
-        root,
-        guess_entry
-    )
-
-    game = create_game_data(
-        word,
-        board,
-        status_label,
-        keyboard_buttons
-    )
-
-    new_game_button = tk.Button(
-        root,
-        text = "New Game",
-        font = ("Arial", 14, "bold"),
-        width = 12,
-        command = lambda: new_game(root, game, guess_entry)
-    )
-    new_game_button.pack(pady=10)
-
-    guess_entry.bind(
-        "<Return>",
-        lambda event: submit_guess(guess_entry, game)
-    )
-
-    root.mainloop()
-
 
 def create_window():
     root = tk.Tk()
@@ -271,9 +188,19 @@ def create_game_data(word, board, status_label, keyboard_buttons):
         "keyboard_buttons": keyboard_buttons,
         "keyboard_colors": {},
         "current_row": 0,
-        "game_over": False
+        "game_over": False,
+        "theme": "Light",
+        "root": None,
+        "title": None,
+        "instructions": None,
+        "guess_entry": None,
+        "new_game_button": None,
+        "theme_frame": None,
+        "theme_button": None,
+        "theme_panel": None,
+        "theme_buttons": {},
+        "theme_panel_open": False
     }
-
 
 def show_message(status_label, message, color):
     status_label.config(
@@ -490,6 +417,57 @@ def get_random_word(word_list):
     ]
 
     return random.choice(words)
+
+def main():
+    root = create_window()
+
+    # word = load_game_word()
+    word = "TWIST"
+
+    title = create_title(root)
+    instructions = create_instructions(root)
+    status_label = create_status_label(root)
+    board = create_board(root)
+
+    guess_entry = create_guess_entry(root)
+
+    keyboard_buttons = create_keyboard(
+        root,
+        guess_entry
+    )
+
+    game = create_game_data(
+        word,
+        board,
+        status_label,
+        keyboard_buttons
+    )
+
+    game["root"] = root
+    game["title"] = title
+    game["instructions"] = instructions
+    game["guess_entry"] = guess_entry
+
+    create_theme_selector(root, game)
+    apply_theme(game)
+
+
+    new_game_button = tk.Button(
+        root,
+        text = "New Game",
+        font = ("Arial", 14, "bold"),
+        width = 12,
+        command = lambda: new_game(root, game, guess_entry)
+    )
+    new_game_button.pack(pady=10)
+
+    guess_entry.bind(
+        "<Return>",
+        lambda event: submit_guess(guess_entry, game)
+    )
+
+    root.mainloop()
+
 
 
 if __name__ == "__main__":
