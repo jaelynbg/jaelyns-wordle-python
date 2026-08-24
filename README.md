@@ -47,6 +47,7 @@ Theme switching during an active game
 Theme-aware game board
 Theme-aware keyboard
 Theme-aware game controls
+Theme-aware empty tile borders
 Organized code using separate functions
 External text files for word data
 🧠 Word Lists
@@ -81,7 +82,7 @@ Contains the main game and the functions used to create and operate the Wordle i
 
 themes.py
 
-Contains the color definitions for the game's themes.
+Contains the centralized color definitions for the game's themes.
 
 themes_ui.py
 
@@ -136,7 +137,7 @@ If all 6 guesses are used, the game ends and the solution is revealed.
 Click New Game to start another game.
 ⌨️ Keyboard Controls
 
-The game supports both physical and on-screen keyboard input.
+The game currently supports both physical and on-screen keyboard input.
 
 Physical Keyboard
 
@@ -156,20 +157,22 @@ Click the letters displayed on the game's QWERTY keyboard to enter a guess.
 
 The game evaluates each letter using Wordle-style rules.
 
-Green
+🟩 Green
 
 The letter is in the correct position.
 
 Example:
 
 Answer: TWIST
-Guess:  TREAT
-        🟩
-Gold
+Guess: TREAT
+
+The first letter is correctly positioned.
+
+🟨 Gold
 
 The letter exists somewhere in the answer but is in the wrong position.
 
-Gray
+⬜ Gray
 
 The letter does not have an available match in the answer.
 
@@ -195,7 +198,7 @@ When the player wins or loses, the game state changes to:
 
 "game_over": True
 
-Once the game is over, the guess entry is disabled.
+Once the game is over, input is disabled.
 
 🔄 New Game
 
@@ -214,224 +217,135 @@ Changes the status message back to "Good Luck!"
 
 The project is being developed in multiple stages.
 
-Each stage focuses on a different part of the application. Git commits are used to track progress throughout development.
+Each stage focuses on a different part of the application. Git commits and checkpoints are used to track progress throughout development.
 
 Stage 1 — Core Game & Theme Functionality
 
 Status: Complete ✅
 
-Stage 1 focused on building the core Wordle game and making the theme system function correctly.
+Stage 1 focused on building the core Wordle game and establishing the theme system.
 
 Stage 1A — Core Game
-
-☑ Create main application window
-
-☑ Create 6 × 5 game board
-
-☑ Create 5-letter input
-
-☑ Add 6-guess limit
-
-☑ Add random solution selection
-
-☑ Add New Game functionality
-
-☑ Track current game row
-
-☑ Track game-over state
-
+ Create main application window
+ Create 6 × 5 game board
+ Create 5-letter input
+ Add 6-guess limit
+ Add random solution selection
+ Add New Game functionality
+ Track current game row
+ Track game-over state
 Stage 1B — Word Validation & Game Logic
-
-☑ Load solution words
-
-☑ Load valid guess words
-
-☑ Validate guesses
-
-☑ Detect correct letters
-
-☑ Detect misplaced letters
-
-☑ Detect incorrect letters
-
-☑ Handle duplicate letters
-
-☑ Display win messages
-
-☑ Display loss messages
-
-☑ Display invalid-word messages
-
-☑ Display remaining guesses
-
+ Load solution words
+ Load valid guess words
+ Validate guesses
+ Detect correct letters
+ Detect misplaced letters
+ Detect incorrect letters
+ Handle duplicate letters
+ Display win messages
+ Display loss messages
+ Display invalid-word messages
+ Display remaining guesses
 Stage 1C — Interactive Keyboard
-
-☑ Create QWERTY keyboard
-
-☑ Add clickable keyboard buttons
-
-☑ Support physical keyboard input
-
-☑ Add keyboard color feedback
-
-☑ Add keyboard color priority
-
-☑ Preserve keyboard states
-
+ Create QWERTY keyboard
+ Add clickable keyboard buttons
+ Support physical keyboard input
+ Add keyboard color feedback
+ Add keyboard color priority
+ Preserve keyboard states
 Stage 1D — Theme System
-
-☑ Create centralized theme definitions
-
-☑ Create Light theme
-
-☑ Create Dark theme
-
-☑ Create Blue theme
-
-☑ Create Pink theme
-
-☑ Create theme selector
-
-☑ Apply themes to application background
-
-☑ Apply themes to text
-
-☑ Apply themes to board
-
-☑ Apply themes to keyboard
-
-☑ Apply themes to game controls
-
+ Create centralized theme definitions
+ Create Light theme
+ Create Dark theme
+ Create Blue theme
+ Create Pink theme
+ Create theme selector
+ Apply themes to application background
+ Apply themes to text
+ Apply themes to board
+ Apply themes to keyboard
+ Apply themes to game controls
 Stage 1E — Theme Fixes
+ Eliminate white keyboard/frame problem
+ Make board borders theme correctly
+ Make empty tiles theme correctly
+ Remove unwanted black empty-tile borders
+ Preserve colored tiles when switching themes
+ Preserve keyboard colors when switching themes
+ Fix theme switching during an active game
+ Make the typing area theme-aware
+ Make the New Game button theme-aware
+ Make surrounding frames theme-aware
+ Verify Light mode
+ Verify Dark mode
+ Verify New Game resets themed tiles correctly
 
-☑ Eliminate white keyboard/frame problem
+Stage 1 checkpoint: stage-1-complete
 
-☑ Make board borders theme correctly
-
-☑ Make empty tiles theme correctly
-
-☑ Preserve colored tiles when switching themes
-
-☑ Preserve keyboard colors when switching themes
-
-☑ Fix theme switching during an active game
-
-☑ Make the typing area theme-aware
-
-☑ Make the New Game button theme-aware
-
-☑ Make surrounding frames theme-aware
-
-Stage 2 — Wordle Visual Refinement
+Stage 2 — Wordle Interaction & Visual Refinement
 
 Status: In Progress 🚧
 
-Stage 2 focuses on making the game look and feel more like the original Wordle interface.
+Stage 2 focuses on making the game behave and look more like the original Wordle interface.
 
-Stage 2A — Typing Box
-
-☐ Improve typing box appearance
-
-☐ Adjust width
-
-☐ Adjust height
-
-☐ Improve border
-
-☐ Improve font
-
-☐ Improve text alignment
-
-☐ Improve padding
-
-☐ Improve cursor appearance
-
+Stage 2A — Wordle-Style Typing
+ Remove the visible guess textbox
+ Allow direct physical keyboard typing
+ Display typed letters directly inside the active tile
+ Allow letters to be typed without a textbox
+ Add Backspace support
+ Make Enter submit the current guess
+ Prevent typing more than 5 letters
+ Handle typing when the game is over
+ Preserve existing word validation
+ Preserve existing guess logic
 Stage 2B — Game Board
-
-☐ Match Wordle tile size
-
-☐ Refine tile spacing
-
-☐ Refine board positioning
-
-☐ Refine letter size
-
-☐ Refine letter weight
-
-☐ Refine tile borders
-
-☐ Refine overall board proportions
-
+ Match Wordle tile size
+ Refine tile spacing
+ Refine board positioning
+ Refine letter size
+ Refine letter weight
+ Match empty tile border colors
+ Refine overall board proportions
+ Improve active-row appearance
 Stage 2C — Keyboard
-
-☐ Match Wordle keyboard dimensions
-
-☐ Adjust key width
-
-☐ Adjust key height
-
-☐ Adjust key spacing
-
-☐ Adjust row spacing
-
-☐ Refine keyboard positioning
-
-☐ Refine keyboard font
-
+ Create Wordle-style QWERTY layout
+ Match keyboard colors
+ Match keyboard background
+ Match Wordle keyboard dimensions
+ Adjust key width
+ Adjust key height
+ Adjust key spacing
+ Adjust row spacing
+ Refine keyboard positioning
+ Refine keyboard font
 Stage 2D — Header & Controls
-
-☐ Refine title
-
-☐ Refine title font
-
-☐ Refine title positioning
-
-☐ Refine instructions
-
-☐ Refine status message
-
-☐ Refine New Game button
-
-☐ Improve spacing between sections
-
-☐ Improve overall window proportions
-
+ Refine title
+ Refine title font
+ Refine title positioning
+ Refine instructions
+ Refine status message
+ Refine New Game button
+ Improve spacing between sections
+ Improve overall window proportions
 Stage 2E — Theme Selector
-
-☐ Refine theme button
-
-☐ Refine dropdown panel
-
-☐ Improve selector spacing
-
-☐ Improve selector typography
-
-☐ Improve selector borders
-
-☐ Improve selected-theme appearance
-
-☐ Improve hover behavior
-
+ Refine theme button
+ Refine dropdown panel
+ Improve selector spacing
+ Improve selector typography
+ Improve selector borders
+ Improve selected-theme appearance
+ Improve hover behavior
 Stage 2F — Final Visual Polish
-
-☐ Review complete application layout
-
-☐ Refine overall proportions
-
-☐ Refine spacing
-
-☐ Ensure consistent typography
-
-☐ Ensure consistent button styling
-
-☐ Ensure consistent borders
-
-☐ Verify all themes
-
-☐ Compare overall appearance with Wordle
-
-☐ Complete final UI adjustments
-
+ Review complete application layout
+ Refine overall proportions
+ Refine spacing
+ Ensure consistent typography
+ Ensure consistent button styling
+ Ensure consistent borders
+ Verify all themes
+ Compare overall appearance with Wordle
+ Complete final UI adjustments
 Stage 3 — Game Experience & Interaction
 
 Status: Planned ⏳
@@ -439,63 +353,34 @@ Status: Planned ⏳
 Stage 3 focuses on making the game feel more polished and interactive.
 
 Stage 3A — Animations
-
-☐ Add tile flip animation
-
-☐ Add tile reveal animation
-
-☐ Add keyboard feedback animation
-
-☐ Add win animation
-
-☐ Add loss animation
-
-☐ Add invalid-word feedback animation
-
+ Add tile flip animation
+ Add tile reveal animation
+ Add keyboard feedback animation
+ Add win animation
+ Add loss animation
+ Add invalid-word feedback animation
 Stage 3B — Improved Game Feedback
-
-☐ Improve win presentation
-
-☐ Improve loss presentation
-
-☐ Improve invalid-word feedback
-
-☐ Improve game-over presentation
-
-☐ Improve New Game transition
-
+ Improve win presentation
+ Improve loss presentation
+ Improve invalid-word feedback
+ Improve game-over presentation
+ Improve New Game transition
 Stage 3C — Statistics
-
-☐ Add games played
-
-☐ Add wins
-
-☐ Add losses
-
-☐ Add win percentage
-
-☐ Add current streak
-
-☐ Add best streak
-
-☐ Add guess distribution
-
-☐ Create statistics display
-
+ Add games played
+ Add wins
+ Add losses
+ Add win percentage
+ Add current streak
+ Add best streak
+ Add guess distribution
+ Create statistics display
 Stage 3D — Accessibility & Input
-
-☐ Improve keyboard navigation
-
-☐ Improve focus behavior
-
-☐ Improve physical keyboard handling
-
-☐ Improve text readability
-
-☐ Improve visual contrast
-
-☐ Improve accessibility of controls
-
+ Improve keyboard navigation
+ Improve focus behavior
+ Improve physical keyboard handling
+ Improve text readability
+ Improve visual contrast
+ Improve accessibility of controls
 Stage 4 — Game Modes & Customization
 
 Status: Planned ⏳
@@ -503,53 +388,29 @@ Status: Planned ⏳
 Stage 4 focuses on expanding the game beyond the basic Wordle experience.
 
 Stage 4A — Game Modes
-
-☐ Add Daily Wordle mode
-
-☐ Add Unlimited Practice mode
-
-☐ Add Custom Word mode
-
-☐ Add Random Practice mode
-
-☐ Add difficulty settings
-
+ Add Daily Wordle mode
+ Add Unlimited Practice mode
+ Add Custom Word mode
+ Add Random Practice mode
+ Add difficulty settings
 Stage 4B — Theme Customization
-
-☐ Add additional themes
-
-☐ Add theme persistence
-
-☐ Save selected theme
-
-☐ Restore selected theme when reopening the game
-
-☐ Improve theme management
-
+ Add additional themes
+ Add theme persistence
+ Save selected theme
+ Restore selected theme when reopening the game
+ Improve theme management
 Stage 4C — Game History
-
-☐ Save completed games
-
-☐ Track game history
-
-☐ Display previous results
-
-☐ Display win/loss history
-
-☐ Add statistics history
-
+ Save completed games
+ Track game history
+ Display previous results
+ Display win/loss history
+ Add statistics history
 Stage 4D — Shareable Results
-
-☐ Create Wordle-style result summary
-
-☐ Add emoji tile results
-
-☐ Add guess count
-
-☐ Add copy-to-clipboard functionality
-
-☐ Add shareable result format
-
+ Create Wordle-style result summary
+ Add emoji tile results
+ Add guess count
+ Add copy-to-clipboard functionality
+ Add shareable result format
 Stage 5 — Sound, Settings & Final Polish
 
 Status: Planned ⏳
@@ -557,59 +418,32 @@ Status: Planned ⏳
 Stage 5 focuses on optional enhancements and preparing the project for a final release.
 
 Stage 5A — Sound
-
-☐ Add optional sound effects
-
-☐ Add keyboard sound
-
-☐ Add tile reveal sound
-
-☐ Add win sound
-
-☐ Add loss sound
-
-☐ Add sound toggle
-
+ Add optional sound effects
+ Add keyboard sound
+ Add tile reveal sound
+ Add win sound
+ Add loss sound
+ Add sound toggle
 Stage 5B — Settings
-
-☐ Create settings menu
-
-☐ Add sound settings
-
-☐ Add animation settings
-
-☐ Add theme settings
-
-☐ Add accessibility settings
-
-☐ Save user preferences
-
+ Create settings menu
+ Add sound settings
+ Add animation settings
+ Add theme settings
+ Add accessibility settings
+ Save user preferences
 Stage 5C — Final Polish
-
-☐ Review all game functionality
-
-☐ Review all themes
-
-☐ Review animations
-
-☐ Review keyboard interaction
-
-☐ Review statistics
-
-☐ Review settings
-
-☐ Fix remaining bugs
-
-☐ Improve error handling
-
-☐ Clean up code
-
-☐ Remove unnecessary code
-
-☐ Improve documentation
-
-☐ Perform final testing
-
+ Review all game functionality
+ Review all themes
+ Review animations
+ Review keyboard interaction
+ Review statistics
+ Review settings
+ Fix remaining bugs
+ Improve error handling
+ Clean up code
+ Remove unnecessary code
+ Improve documentation
+ Perform final testing
 🧩 Project Structure
 
 The project is intentionally organized into many smaller functions.
@@ -662,7 +496,7 @@ File handling
 List comprehensions
 Set comprehensions
 Random selection
-GUI development with Tkinter widgets
+GUI development with Tkinter
 Event handling
 Keyboard events
 GUI state management
@@ -685,6 +519,9 @@ Daily Wordle mode
 Shareable results
 Sound effects
 More polished animations
+Additional themes
+Theme persistence
+Settings menu
 👩🏽‍💻 Author
 
 Jaelyn Garrard
@@ -699,7 +536,7 @@ Development Progress
 
 Stage 1 — Core Game & Theme Functionality: ✅ Complete
 
-Stage 2 — Wordle Visual Refinement: 🚧 In Progress
+Stage 2 — Wordle Interaction & Visual Refinement: 🚧 In Progress
 
 Stage 3 — Game Experience & Interaction: ⏳ Planned
 
