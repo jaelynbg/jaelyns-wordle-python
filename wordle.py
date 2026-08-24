@@ -9,6 +9,7 @@ from themes_ui import apply_theme, create_theme_selector
 NUM_LETTERS = 5
 NUM_GUESSES = 6
 
+
 def add_letter(game, letter):
 
     if game["game_over"]:
@@ -21,6 +22,7 @@ def add_letter(game, letter):
         update_current_row(
             game
         )
+
 
 def create_keyboard(root, game):
 
@@ -152,6 +154,7 @@ def create_keyboard(root, game):
         keyboard_row_frames
     )
 
+
 def end_game(game):
 
     game["game_over"] = True
@@ -172,9 +175,13 @@ def new_game(root, game):
         for _ in range(NUM_GUESSES)
     ]
 
-    reset_board(game)
+    reset_board(
+        game
+    )
 
-    reset_keyboard(game)
+    reset_keyboard(
+        game
+    )
 
     game["current_guess"] = ""
 
@@ -203,15 +210,18 @@ def reset_board(game):
             )
 
     # Reapply the currently selected theme
-    apply_theme(game)
+    apply_theme(
+        game
+    )
 
 
 def reset_keyboard(game):
 
     game["keyboard_colors"] = {}
 
-    apply_theme(game)
-
+    apply_theme(
+        game
+    )
 
 
 def create_window():
@@ -231,7 +241,9 @@ def create_window():
 
 def load_game_word():
 
-    words_path = pathlib.Path(__file__).parent / "solutions.txt"
+    words_path = pathlib.Path(
+        __file__
+    ).parent / "solutions.txt"
 
     word_list = words_path.read_text(
         encoding="utf-8"
@@ -289,7 +301,9 @@ def create_status_label(root):
 
 def create_board(root):
 
-    board = tk.Frame(root)
+    board = tk.Frame(
+        root
+    )
 
     board.pack(
         pady=10
@@ -322,11 +336,15 @@ def create_board(root):
                 pady=3
             )
 
-            row_boxes.append(box)
+            row_boxes.append(
+                box
+            )
 
-        boxes.append(row_boxes)
+        boxes.append(
+            row_boxes
+        )
 
-    return board,boxes
+    return board, boxes
 
 
 def create_game_data(
@@ -427,10 +445,11 @@ def show_message(
         )
 
 
-
 def is_valid_word(guess):
 
-    words_path = pathlib.Path(__file__).parent / "guesses.txt"
+    words_path = pathlib.Path(
+        __file__
+    ).parent / "guesses.txt"
 
     word_list = words_path.read_text(
         encoding="utf-8"
@@ -452,12 +471,17 @@ def handle_keypress(event, game):
 
     key = event.keysym.upper()
 
+    # -------------------------
     # Backspace
+    # -------------------------
+
     if key == "BACKSPACE":
 
         if len(game["current_guess"]) > 0:
 
-            game["current_guess"] = game["current_guess"][:-1]
+            game["current_guess"] = (
+                game["current_guess"][:-1]
+            )
 
             update_current_row(
                 game
@@ -465,7 +489,10 @@ def handle_keypress(event, game):
 
         return
 
+    # -------------------------
     # Enter
+    # -------------------------
+
     if key == "RETURN":
 
         submit_guess(
@@ -474,12 +501,17 @@ def handle_keypress(event, game):
 
         return
 
+    # -------------------------
     # Letters A-Z
+    # -------------------------
+
     if len(event.char) == 1 and event.char.isalpha():
 
         if len(game["current_guess"]) < NUM_LETTERS:
 
-            game["current_guess"] += event.char.upper()
+            game["current_guess"] += (
+                event.char.upper()
+            )
 
             update_current_row(
                 game
@@ -530,15 +562,17 @@ def update_current_row(game):
                 highlightcolor=theme["board"]["border"]
             )
 
-def submit_guess(
-    
-    game
-):
+
+def submit_guess(game):
 
     if game["game_over"]:
         return
 
     guess = game["current_guess"].upper()
+
+    # -------------------------
+    # Check length
+    # -------------------------
 
     if len(guess) != NUM_LETTERS:
 
@@ -550,6 +584,10 @@ def submit_guess(
 
         return
 
+    # -------------------------
+    # Check valid word
+    # -------------------------
+
     if not is_valid_word(guess):
 
         show_message(
@@ -560,12 +598,20 @@ def submit_guess(
 
         return
 
+    # -------------------------
+    # Make sure row exists
+    # -------------------------
+
     if game["current_row"] >= NUM_GUESSES:
         return
 
     word = game["word"]
 
     current_row = game["current_row"]
+
+    # -------------------------
+    # Update board
+    # -------------------------
 
     update_board(
         game,
@@ -574,11 +620,19 @@ def submit_guess(
         word
     )
 
+    # -------------------------
+    # Update keyboard
+    # -------------------------
+
     update_keyboard(
         game,
         guess,
         word
     )
+
+    # -------------------------
+    # Correct guess
+    # -------------------------
 
     if guess == word:
 
@@ -589,14 +643,20 @@ def submit_guess(
         )
 
         end_game(
-            game,
+            game
         )
 
         return
 
+    # -------------------------
+    # Move to next row
+    # -------------------------
+
     game["current_row"] += 1
 
-    guesses_left = NUM_GUESSES - game["current_row"]
+    guesses_left = (
+        NUM_GUESSES - game["current_row"]
+    )
 
     if guesses_left == 0:
 
@@ -607,7 +667,7 @@ def submit_guess(
         )
 
         end_game(
-            game,
+            game
         )
 
     elif guesses_left == 1:
@@ -638,9 +698,14 @@ def get_letter_colors(
         "wrong"
     ] * NUM_LETTERS
 
-    remaining_letters = list(word)
+    remaining_letters = list(
+        word
+    )
 
+    # -------------------------
     # Correct letters
+    # -------------------------
+
     for column, letter in enumerate(guess):
 
         if letter == word[column]:
@@ -649,7 +714,10 @@ def get_letter_colors(
 
             remaining_letters[column] = None
 
+    # -------------------------
     # Misplaced letters
+    # -------------------------
+
     for column, letter in enumerate(guess):
 
         if colors[column] == "correct":
@@ -659,7 +727,9 @@ def get_letter_colors(
 
             colors[column] = "misplaced"
 
-            letter_index = remaining_letters.index(letter)
+            letter_index = (
+                remaining_letters.index(letter)
+            )
 
             remaining_letters[letter_index] = None
 
@@ -684,7 +754,9 @@ def update_board(
 
         status = colors[column]
 
-        game["board_colors"][row][column] = status
+        game["board_colors"][row][column] = (
+            status
+        )
 
         set_letter_color(
             board[row][column],
@@ -711,28 +783,32 @@ def update_keyboard(
         "correct": 3
     }
 
-    keyboard_colors = game["keyboard_colors"]
+    keyboard_colors = (
+        game["keyboard_colors"]
+    )
 
     for letter, color in zip(
         guess,
         colors
     ):
 
-        previous_color = keyboard_colors.get(
-            letter
+        previous_color = (
+            keyboard_colors.get(letter)
         )
 
         if (
             previous_color is None
-            or color_priority[color] >
-            color_priority[previous_color]
+            or color_priority[color]
+            > color_priority[previous_color]
         ):
 
             keyboard_colors[letter] = color
 
-    # Reapply the theme so the keyboard uses
-    # the current theme colors.
-    apply_theme(game)
+    # Reapply the theme so the keyboard
+    # uses the current theme colors.
+    apply_theme(
+        game
+    )
 
 
 def set_letter_color(
@@ -756,6 +832,7 @@ def set_letter_color(
         relief="flat",
         highlightthickness=0
     )
+
 
 def get_random_word(word_list):
 
@@ -811,8 +888,14 @@ def main():
     )
 
     game["root"] = root
+
     game["title"] = title
+
     game["instructions"] = instructions
+
+    # -------------------------
+    # Create keyboard
+    # -------------------------
 
     (
         keyboard_buttons,
@@ -823,9 +906,21 @@ def main():
         game
     )
 
-    game["keyboard_buttons"] = keyboard_buttons
-    game["keyboard_frame"] = keyboard_frame
-    game["keyboard_row_frames"] = keyboard_row_frames
+    game["keyboard_buttons"] = (
+        keyboard_buttons
+    )
+
+    game["keyboard_frame"] = (
+        keyboard_frame
+    )
+
+    game["keyboard_row_frames"] = (
+        keyboard_row_frames
+    )
+
+    # -------------------------
+    # Theme selector
+    # -------------------------
 
     create_theme_selector(
         root,
@@ -836,6 +931,10 @@ def main():
         game
     )
 
+    # -------------------------
+    # New Game button
+    # -------------------------
+
     new_game_button = tk.Button(
         root,
         text="New Game",
@@ -843,7 +942,7 @@ def main():
         width=12,
         command=lambda: new_game(
             root,
-            game,
+            game
         )
     )
 
@@ -851,7 +950,13 @@ def main():
         pady=10
     )
 
-    game["new_game_button"] = new_game_button
+    game["new_game_button"] = (
+        new_game_button
+    )
+
+    # -------------------------
+    # Keyboard input
+    # -------------------------
 
     root.bind(
         "<Key>",
@@ -865,5 +970,7 @@ def main():
 
     root.mainloop()
 
+
 if __name__ == "__main__":
+
     main()
