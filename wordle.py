@@ -49,11 +49,56 @@ def add_letter(guess_entry, letter):
     if len(current_guess) < NUM_LETTERS:
         guess_entry.insert(tk.END, letter)
 
+def disable_guess_entry(guess_entry):
+    guess_entry.config(state="disabled")
+
+def end_game(game, guess_entry):
+    game["game_over"] = True
+    disable_guess_entry(guess_entry)
+
+def new_game(root, game, guess_entry):
+    # Reset the game state
+    game["word"] = load_game_word()
+    game["current_row"] = 0
+    game["game_over"] = False
+    game["keyboard_colors"] = {}
+
+    reset_board(game["board"])
+    reset_keyboard(game["keyboard_buttons"])
+    reset_guess_entry(guess_entry)
+
+    show_message(
+        game["status_label"],
+        "Good Luck!",
+        "black"
+    )
+
+def reset_board(board):
+    for row in board:
+        for box in row:
+            box.config(
+                text="",
+                bg="SystemButtonFace",
+                fg="black"
+            )
+
+def reset_keyboard(keyboard_buttons):
+    for button in keyboard_buttons.values():
+        button.config(
+            bg="SystemButtonFace",
+            fg="black"
+        )
+
+def reset_guess_entry(guess_entry):
+    guess_entry.config(state="normal")
+    guess_entry.delete(0, tk.END)
+    guess_entry.focus()
 
 def main():
     root = create_window()
 
-    word = load_game_word()
+    # word = load_game_word()
+    word = "TWIST"
 
     title = create_title(root)
     instructions = create_instructions(root)
@@ -74,6 +119,15 @@ def main():
         keyboard_buttons
     )
 
+    new_game_button = tk.Button(
+        root,
+        text = "New Game",
+        font = ("Arial", 14, "bold"),
+        width = 12,
+        command = lambda: new_game(root, game, guess_entry)
+    )
+    new_game_button.pack(pady=10)
+
     guess_entry.bind(
         "<Return>",
         lambda event: submit_guess(guess_entry, game)
@@ -91,7 +145,7 @@ def create_window():
 
 
 def load_game_word():
-    words_path = pathlib.Path(__file__).parent / "wordlist.txt"
+    words_path = pathlib.Path(__file__).parent / "solutions.txt"
 
     word_list = words_path.read_text(
         encoding="utf-8"
@@ -174,7 +228,8 @@ def create_game_data(word, board, status_label, keyboard_buttons):
         "status_label": status_label,
         "keyboard_buttons": keyboard_buttons,
         "keyboard_colors": {},
-        "current_row": 0
+        "current_row": 0,
+        "game_over": False
     }
 
 
@@ -198,7 +253,7 @@ def create_guess_entry(root):
 
 
 def is_valid_word(guess):
-    words_path = pathlib.Path(__file__).parent / "wordlist.txt"
+    words_path = pathlib.Path(__file__).parent / "guesses.txt"
 
     word_list = words_path.read_text(
         encoding="utf-8"
@@ -215,6 +270,9 @@ def is_valid_word(guess):
 
 
 def submit_guess(guess_entry, game):
+    if game["game_over"]:
+        return
+    
     guess = guess_entry.get().upper()
 
     if len(guess) != NUM_LETTERS:
@@ -260,7 +318,8 @@ def submit_guess(guess_entry, game):
             "🎉 Correct! You got it!",
             "green"
         )
-        guess_entry.delete(0, tk.END)
+
+        end_game(game, guess_entry)
         return
 
     game["current_row"] += 1
@@ -274,6 +333,7 @@ def submit_guess(guess_entry, game):
             "red"
         )
 
+        end_game(game, guess_entry)
     elif guesses_left == 1:
         show_message(
             game["status_label"],
