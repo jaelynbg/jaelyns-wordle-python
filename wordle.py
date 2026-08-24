@@ -268,7 +268,9 @@ def create_board(root):
                 width=5,
                 height=2,
                 borderwidth=2,
-                relief="solid",
+                relief="flat",
+                highlightthickness=1,
+                takefocus=0
             )
 
             box.grid(
